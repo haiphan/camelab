@@ -1,0 +1,14 @@
+namespace LeetCode.Library.Algorithms;
+
+public class Lc{ID}Solution {
+    public void {NAME}() {
+        // --- COMMON SNIPPETS ---
+        
+        // 1. Tuple Swap: (a, b) = (b, a);
+        // 2. 2D Directions: var dirs = new[] { (0,1), (0,-1), (1,0), (-1,0) };
+        // 3. Modulo: const int MOD = 1_000_000_007;
+        
+        // TODO: Implement solution
+        throw new NotImplementedException();
+    }
+}

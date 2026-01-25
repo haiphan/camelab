@@ -1,0 +1,19 @@
+using LeetCode.Library.Algorithms;
+using Xunit;
+
+namespace LeetCode.Tests;
+
+public class Lc{ID}Tests {
+    [Theory]
+    [InlineData(new int[] { 3,5,2,3 }, 7)]
+    public void Test_{NAME}(int[] nums, int expected) {
+        // Arrange
+        var solution = new Lc{ID}Solution();
+
+        // Act
+        // var result = solution.{NAME}(nums, k);
+
+        // Assert
+        // Assert.Equal(expected, result);
+    }
+}
