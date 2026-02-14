@@ -75,11 +75,22 @@ public class Lc3714Solution {
         for (int i = 0; i < n; i++) {
             cntABC[s[i] - 'a']++;
         }
-        int v = OneChar(s);
-        v = Math.Max(v, TwoChars(s, 'a', 'b'));
-        v = Math.Max(v, TwoChars(s, 'a', 'c'));
-        v = Math.Max(v, TwoChars(s, 'b', 'c'));
-        v = Math.Max(v, ThreeChars(s));
-        return v;
+
+        // Create list of (upper_bound, action) and sort by upper_bound descending
+        var candidates = new List<(int ub, Action action)>
+        {
+            (cntABC[0], () => OneChar(s)),
+            (Math.Min(cntABC[0], cntABC[1]) * 2, () => TwoChars(s, 'a', 'b')),
+            (Math.Min(cntABC[0], cntABC[2]) * 2, () => TwoChars(s, 'a', 'c')),
+            (Math.Min(cntABC[1], cntABC[2]) * 2, () => TwoChars(s, 'b', 'c')),
+            (3 * Math.Min(cntABC[0], Math.Min(cntABC[1], cntABC[2])), () => ThreeChars(s))
+        };
+        candidates.Sort((a, b) => b.ub.CompareTo(a.ub)); // Sort descending by upper bound
+
+        foreach (var (_, action) in candidates) {
+            action();
+        }
+
+        return ans;
     }
 }
