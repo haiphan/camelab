@@ -18,7 +18,7 @@ public class Lc110Tests {
         // Arrange
         var solution = new Lc110Solution();
         var codec = new TreeCodec();
-        var root = codec.Deserialize(tree)!;
+        TreeNode root = codec.Deserialize(tree)!;
         // Act
         var result = solution.IsBalanced(root);
 
