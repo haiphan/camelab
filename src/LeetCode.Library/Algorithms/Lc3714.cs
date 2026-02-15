@@ -25,14 +25,20 @@ public class Lc3714Solution {
             return ans;
         }
         int n = s.Length;
-        Dictionary<int, int> pos = new(n);
-        pos[0] = -1;
+        int[] pos = new int[2 * n + 1];
+        int[] mark = new int[2 * n + 1];
+        int offset = n; // Offset to handle negative deltas
+        int m = 1;
+        pos[offset] = -1; // pos[0] = -1
+        mark[offset] = m;
         int delta = 0;
+
         for (int i = 0; i < n; i++) {
             if (s[i] != c1 && s[i] != c2) {
                 if (n - (i + 1) <= ans) return ans;
-                pos.Clear();
-                pos[0] = i;
+                m++;
+                pos[offset] = i;
+                mark[offset] = m;
                 delta = 0;
                 continue;
             }
@@ -41,10 +47,12 @@ public class Lc3714Solution {
             } else {
                 delta--;
             }
-            if (pos.TryGetValue(delta, out int p)) {
-                ans = Math.Max(ans, i - p);
+            int idx = offset + delta;
+            if (mark[idx] == m) {
+                ans = Math.Max(ans, i - pos[idx]);
             } else {
-                pos[delta] = i;
+                pos[idx] = i;
+                mark[idx] = m;
             }
         }
         return ans;
