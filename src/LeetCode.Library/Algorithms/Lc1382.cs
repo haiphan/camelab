@@ -2,8 +2,8 @@ namespace LeetCode.Library.Algorithms;
 using LeetCode.Library.DataStructures;
 
 public class Lc1382Solution {
-    public List<TreeNode> nodeList = new();
-    public void Inorder(TreeNode root) {
+    public List<TreeNode> nodeList = [];
+    public void Inorder(TreeNode? root) {
         if (root == null) return;
         Inorder(root.left);
         nodeList.Add(root);
