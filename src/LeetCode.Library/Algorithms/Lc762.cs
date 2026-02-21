@@ -34,7 +34,8 @@ public class Lc762Solution {
                 // the resulting number is guaranteed to be < U.
                 // We choose the remaining needed '1's from the 'i' bits below.
                 int needed = k - onesSoFar;
-                if (needed >= 0 && needed <= i) {
+                if (needed < 0) break;
+                if (needed <= i) {
                     total += nck[i][needed];
                 }
                 onesSoFar++;
