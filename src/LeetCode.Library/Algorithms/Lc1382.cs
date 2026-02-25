@@ -9,7 +9,7 @@ public class Lc1382Solution {
         nodeList.Add(root);
         Inorder(root.right);
     }
-    public TreeNode Build(int l, int r) {
+    public TreeNode? Build(int l, int r) {
         if (l > r) return null;
         int m = (l + r) >> 1;
         TreeNode cur = nodeList[m];
@@ -19,6 +19,6 @@ public class Lc1382Solution {
     }
     public TreeNode BalanceBST(TreeNode root) {
         Inorder(root);
-        return Build(0, nodeList.Count - 1);
+        return Build(0, nodeList.Count - 1)!;
     }
 }
