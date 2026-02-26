@@ -3,7 +3,7 @@ using LeetCode.Library.DataStructures;
 
 public class Lc110Solution {
     public bool good = true;
-    public int dfs(TreeNode root) {
+    public int dfs(TreeNode? root) {
         if (root == null) return 0;
         int l = dfs(root.left);
         int r = dfs(root.right);
