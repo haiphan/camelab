@@ -8,6 +8,7 @@ public class Lc3129Tests {
     {
         // zero, one, limit, expectedResult
         { 1, 1, 2, 2 },
+        { 1, 2, 1, 1 },
         { 3, 3, 2, 14 },
     };
     
