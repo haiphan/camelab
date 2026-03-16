@@ -1,8 +1,8 @@
 namespace LeetCode.Library.Algorithms;
 
 public class Lc3129Solution {
-    public long[] fact;
-    public long[] invFact;
+    public long[] fact = [];
+    public long[] invFact = [];
     public int mod = 1000000007;
     public long Pow(long a, long b) {
         long res = 1;
