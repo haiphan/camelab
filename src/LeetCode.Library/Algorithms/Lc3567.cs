@@ -31,6 +31,7 @@ public class Lc3567Solution {
                 {
                     if (arr[x] == arr[x - 1]) continue; // skip duplicates to avoid unnecessary comparisons
                     minDiff = Math.Min(minDiff, Math.Abs(arr[x] - arr[x - 1]));
+                    if (minDiff == 1) break; // early exit if we find the smallest possible difference
                 }
                 ans[i][j] = minDiff;
             }
