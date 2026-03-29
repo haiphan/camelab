@@ -11,6 +11,8 @@ public class Lc2573Solution {
                 res[i] = cur;
                 for (int j = i + 1; j < n; j++) {
                     if (lcp[i][j] > 0) {
+                        // lcp[i][j] > 0 means res[i] and res[j] must be the same character
+                        // because lcp[i][j] is the length of the longest common prefix of res[i..] and res[j..]
                         res[j] = res[i];
                     }
                 }
@@ -18,14 +20,16 @@ public class Lc2573Solution {
             }
         }
         for (int i = n - 1; i >= 0; i--) {
+            int[] row = lcp[i];
             for (int j = n - 1; j >= 0; j--) {
+                int v = row[j];
                 if (res[i] != res[j]) {
-                    if (lcp[i][j] > 0) return "";
+                    if (v > 0) return "";
                 } else {
                     if (i == n - 1 || j == n - 1) {
-                        if (lcp[i][j] != 1) return "";
+                        if (v != 1) return "";
                     } else {
-                        if (lcp[i][j] != lcp[i + 1][j + 1] + 1) return "";
+                        if (v != lcp[i + 1][j + 1] + 1) return "";
                     }
                 }
             }
