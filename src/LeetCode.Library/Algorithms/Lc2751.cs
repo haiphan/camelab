@@ -14,11 +14,8 @@ public class Lc2751Solution {
             if (directions[j] == 'R') {
                 stack.Push(j);
             } else {
-                int top = -1;
-                if (stack.Count > 0) {
-                    top = stack.Peek();
-                }
-                while (top != -1) {
+                while (stack.Count > 0 && healths[j] > 0) {
+                    int top = stack.Peek();
                     if (healths[top] == healths[j]) {
                         healths[top] = 0;
                         healths[j] = 0;
@@ -32,10 +29,6 @@ public class Lc2751Solution {
                         healths[top] = 0;
                         healths[j]--;
                         stack.Pop();
-                        top = -1;
-                        if (stack.Count > 0) {
-                            top = stack.Peek();
-                        }
                     }
                 }
             }
