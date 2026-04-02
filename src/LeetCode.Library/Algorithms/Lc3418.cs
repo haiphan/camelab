@@ -7,13 +7,9 @@ public class Lc3418Solution {
         int[] prev = new int[m * 3];
         Array.Fill(prev, SMALL);
 
-        static int Idx(int j, int k) {
-            return (j * 3) + k;
-        }
-
-        prev[Idx(0, 0)] = coins[0][0];
-        prev[Idx(0, 1)] = 0;
-        prev[Idx(0, 2)] = 0;
+        prev[0] = coins[0][0];
+        prev[1] = 0;
+        prev[2] = 0;
 
         for (int j = 1; j < m; j++) {
             int v = coins[0][j];
@@ -29,12 +25,12 @@ public class Lc3418Solution {
 
         for (int i = 1; i < n; i++) {
             int v0 = coins[i][0];
-            int up00 = prev[Idx(0, 0)];
-            int up01 = prev[Idx(0, 1)];
-            int up02 = prev[Idx(0, 2)];
-            prev[Idx(0, 0)] = up00 + v0;
-            prev[Idx(0, 1)] = Math.Max(up01 + v0, up00);
-            prev[Idx(0, 2)] = Math.Max(up02 + v0, up01);
+            int up00 = prev[0];
+            int up01 = prev[1];
+            int up02 = prev[2];
+            prev[0] = up00 + v0;
+            prev[1] = Math.Max(up01 + v0, up00);
+            prev[2] = Math.Max(up02 + v0, up01);
 
             for (int j = 1; j < m; j++) {
                 int v = coins[i][j];
