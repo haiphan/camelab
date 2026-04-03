@@ -3,6 +3,7 @@ namespace LeetCode.Library.Algorithms;
 public class Lc2751Solution {
     public IList<int> SurvivedRobotsHealths(int[] positions, int[] healths, string directions) {
         int n = positions.Length;
+        if (n == 1) return healths;
         int[] idx = new int[n];
         for (int i = 0; i < n; i++) {
             idx[i] = i;
