@@ -4,20 +4,19 @@ using Xunit;
 namespace LeetCode.Tests;
 
 public class Lc{ID}Tests {
-    public static TheoryData<int, int[][], int> Lc{ID}Data => new()
+    public static TheoryData<{THEORY_TYPES}> Lc{ID}Data => new()
     {
-        // n, edges, expectedResult
-        { 4, [[0,1,3], [3,1,1], [2,3,4], [0,2,2]], 5 },
+{DATA_ROWS}
     };
     
     [Theory]
     [MemberData(nameof(Lc{ID}Data))]
-    public void Test_{NAME}(int[] nums, int expected) {
+    public void Test_{NAME}({TEST_PARAMS}) {
         // Arrange
         var solution = new Lc{ID}Solution();
 
         // Act
-        // var result = solution.{NAME}(nums, k);
+        // var result = {METHOD_CALL};
 
         // Assert
         // Assert.Equal(expected, result);
