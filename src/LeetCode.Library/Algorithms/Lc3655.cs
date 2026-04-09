@@ -1,6 +1,8 @@
 namespace LeetCode.Library.Algorithms;
 
 public class Lc3655Solution {
+    private readonly record struct QueryRec(int L, int R, int V);
+
     private const int MOD = 1_000_000_007;
     private int ModPow(long a, long b) {
         long ans = 1;
@@ -21,15 +23,15 @@ public class Lc3655Solution {
         int n = nums.Length;
         int m = queries.Length;
         int block = (int)Math.Sqrt(n);
-        List<List<int[]>> groups = new List<List<int[]>>(block);
+        List<QueryRec>[] groups = new List<QueryRec>[block];
         for (int i = 0; i < block; i++) {
-            groups.Add(new List<int[]>());
+            groups[i] = new List<QueryRec>();
         }
         foreach (int[] q in queries) {
             int l = q[0], r = q[1], k = q[2], v = q[3];
             if (k < block)
             {
-                groups[k].Add([l, r, v]);
+                groups[k].Add(new QueryRec(l, r, v));
             } else {
                 for (int i = l; i <= r; i += k) {
                     nums[i] = (int)((long)nums[i] * v % MOD);
@@ -43,9 +45,9 @@ public class Lc3655Solution {
                 continue;
             }
             Array.Fill(diff, 1);
-            foreach (int[] q in groups[k])
+            foreach (QueryRec q in groups[k])
             {
-                int l = q[0], r = q[1], v = q[2];
+                int l = q.L, r = q.R, v = q.V;
                 diff[l] = diff[l] * v % MOD;
                 int end = ((r - l) / k + 1) * k + l;
                 diff[end] = diff[end] * ModInverse(v) % MOD;
