@@ -15,16 +15,22 @@ public class Lc2463Solution {
             prev[i] = BIG;
         }
 
+        int assignedPrevMax = 0;
         for (int j = 0; j < m; j++) {
             int pos = factory[j][0];
             int limit = factory[j][1];
+            int assignedCurMax = Math.Min(n, assignedPrevMax + limit);
 
-            for (int i = 0; i <= n; i++) {
+            for (int i = 0; i <= assignedCurMax; i++) {
                 long best = prev[i];
                 long dist = 0;
+                int minAssign = Math.Max(1, i - assignedPrevMax);
                 int maxAssign = Math.Min(i, limit);
                 for (int k = 1; k <= maxAssign; k++) {
                     dist += Math.Abs(sortedRobot[i - k] - pos);
+                    if (k < minAssign) {
+                        continue;
+                    }
                     long candidate = prev[i - k] + dist;
                     if (candidate < best) {
                         best = candidate;
@@ -32,8 +38,12 @@ public class Lc2463Solution {
                 }
                 cur[i] = best;
             }
+            for (int i = assignedCurMax + 1; i <= n; i++) {
+                cur[i] = BIG;
+            }
 
             (prev, cur) = (cur, prev);
+            assignedPrevMax = assignedCurMax;
         }
 
         return prev[n];
