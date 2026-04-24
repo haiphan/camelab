@@ -3,7 +3,7 @@ namespace LeetCode.Library.Algorithms;
 public class Lc2463Solution {
     public long MinimumTotalDistance(IList<int> robot, int[][] factory) {
         int n = robot.Count, m = factory.Length;
-        int[] sortedRobot = robot.ToArray();
+        int[] sortedRobot = [.. robot];
         Array.Sort(sortedRobot);
         Array.Sort(factory, (a, b) => a[0].CompareTo(b[0]));
         const long BIG = (long)1e18;
