@@ -38,6 +38,9 @@ public class Lc3464Solution {
             Span<int> idx = k <= 64 ? stackalloc int[k] : new int[k];
             long cur = dists[0];
             for (int i = 1; i < k; i++) {
+                if (m - idx[i - 1] <= k - i) {
+                    return false;
+                }
                 int j = LowerBound(cur + v, idx[i - 1] + 1);
                 if (j == m) {
                     return false;
@@ -48,8 +51,11 @@ public class Lc3464Solution {
             if (cur - dists[0] <= perimeter - v) {
                 return true;
             }
-            for (idx[0] = 1; idx[0] < m; idx[0]++) {
+            for (idx[0] = 1; idx[0] <= m - k; idx[0]++) {
                 for (int j = 1; j < k; j++) {
+                    if (m - idx[j - 1] <= k - j) {
+                        return false;
+                    }
                     while (idx[j] < m && dists[idx[j]] - dists[idx[j - 1]] < v) {
                         idx[j]++;
                     }
