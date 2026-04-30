@@ -6,6 +6,7 @@ public class Lc3225Solution {
         if (n == 1) {
             return 0;
         }
+        // col[c][r] = sum of first r elements in column c
         long[][] col = new long[n][];
         for (int c = 0; c < n; c++) {
             col[c] = new long[n + 1];
@@ -13,7 +14,8 @@ public class Lc3225Solution {
                 col[c][r + 1] = col[c][r] + grid[r][c];
             }
         }
-
+        // prevPick[cur] = max score if we pick cur in the previous column
+        // prevSkip[cur] = max score if we skip cur in the previous column
         long[] prevPick = new long[n + 1];
         long[] prevSkip = new long[n + 1];
 
