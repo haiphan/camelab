@@ -16,6 +16,7 @@ public class Lc3742Solution {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 Array.Fill(curRow[j], -1);
+                int reachableSpend = Math.Min(maxSpend, i + j);
 
                 if (i == 0 && j == 0) {
                     curRow[j][0] = 0;
@@ -29,7 +30,7 @@ public class Lc3742Solution {
                 int[] leftCell = j > 0 ? curRow[j - 1] : null!;
 
                 if (addCost == 0) {
-                    for (int t = 0; t <= maxSpend; t++) {
+                    for (int t = 0; t <= reachableSpend; t++) {
                         int bestPrev = -1;
                         if (i > 0) {
                             bestPrev = topCell[t];
@@ -43,7 +44,7 @@ public class Lc3742Solution {
                         }
                     }
                 } else {
-                    for (int t = 1; t <= maxSpend; t++) {
+                    for (int t = 1; t <= reachableSpend; t++) {
                         int idx = t - 1;
                         int bestPrev = -1;
                         if (i > 0) {
