@@ -1,7 +1,9 @@
 namespace LeetCode.Library.Algorithms;
 
 public class Lc788Solution {
+    // Digits that are valid after rotation: 0, 1, 2, 5, 6, 8, 9
     private static readonly bool[] Valid = { true, true, true, false, false, true, true, false, true, true };
+    // Digits that change to a different valid digit after rotation: 2, 5, 6, 9
     private static readonly bool[] Changes = { false, false, true, false, false, true, true, false, false, true };
 
     // Counts good numbers in [1, n] by digit combinatorics instead of checking every number.
@@ -27,6 +29,11 @@ public class Lc788Solution {
 
         // Count good numbers with fewer digits than n.
         for (int len = 1; len < length; len++) {
+            // for each length, we have 7 choices for each digit, but we need to exclude those that are all from {0, 1, 8}.
+            // Total combinations for len digits: 7^len
+            // Combinations that are not good (only 0, 1, 8): 3^len
+            // For len-digit numbers, the first digit cannot be 0, so we have 6 choices for the first digit and 7 choices for the remaining (len - 1) digits.
+            // numbers that have only 0, 1, 8: 2 choices for the first digit (1 or 8) and 3 choices for the remaining (len - 1) digits.
             total += 6 * pow7[len - 1] - 2 * pow3[len - 1];
         }
 
@@ -51,6 +58,7 @@ public class Lc788Solution {
             }
 
             if (!Valid[currentDigit]) {
+                // If the current digit is invalid, we cannot form any more valid numbers by adding more digits.
                 prefixAllValid = false;
                 break;
             }
@@ -59,7 +67,7 @@ public class Lc788Solution {
                 prefixHasChange = true;
             }
         }
-
+        // If all digits of n are valid and at least one digit causes a change, then n itself is a good number.
         if (prefixAllValid && prefixHasChange) {
             total++;
         }
