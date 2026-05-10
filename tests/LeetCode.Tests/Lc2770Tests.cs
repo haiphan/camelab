@@ -8,6 +8,7 @@ public class Lc2770Tests {
     {
         // nums, target, expectedResult
         { [1,3,6,4,1,2], 2, 3 },
+        { [1,3,4,0,2], 2, 3}
     };
     
     [Theory]

@@ -18,7 +18,7 @@ public class Lc2770Solution {
 
             for (int j = i - 1; j >= 0; j--) {
                 int prev = dp[j];
-                if (prev == -1) {
+                if (prev == -1 || prev + 1 <= best) {
                     continue;
                 }
 
