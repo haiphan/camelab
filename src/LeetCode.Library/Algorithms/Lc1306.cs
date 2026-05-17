@@ -8,7 +8,7 @@ public class Lc1306Solution {
         }
 
         bool[] seen = new bool[n];
-        Queue<int> q = new Queue<int>();
+        Queue<int> q = new Queue<int>(n);
         seen[start] = true;
         q.Enqueue(start);
 
