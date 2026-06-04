@@ -73,7 +73,7 @@ fetch_signature_from_leetcode() {
     fi
 
     payload=$(printf '{"query":"query questionData($titleSlug: String!) { question(titleSlug: $titleSlug) { codeSnippets { langSlug code } } }","variables":{"titleSlug":"%s"}}' "$slug")
-
+    echo "Fetch with payload: $payload" >&2
     response=$(curl -sS "https://leetcode.com/graphql" \
         -H "Content-Type: application/json" \
         -H "Referer: https://leetcode.com/problems/$slug/" \
