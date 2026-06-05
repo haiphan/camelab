@@ -2,9 +2,43 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc3753Solution {
     private const int DigitStates = 11; // -1..9 mapped to 0..10
+    private const long DirectScanThreshold = 2048;
 
     private static bool IsPeakOrValley(int left, int mid, int right) {
         return (mid > left && mid > right) || (mid < left && mid < right);
+    }
+
+    private static int GetWaviness(long num) {
+        if (num < 100) {
+            return 0;
+        }
+
+        int right = (int)(num % 10);
+        num /= 10;
+        int mid = (int)(num % 10);
+        num /= 10;
+
+        int count = 0;
+        while (num > 0) {
+            int left = (int)(num % 10);
+            if (IsPeakOrValley(left, mid, right)) {
+                count++;
+            }
+
+            right = mid;
+            mid = left;
+            num /= 10;
+        }
+
+        return count;
+    }
+
+    private static long TotalWavinessDirect(long num1, long num2) {
+        long total = 0;
+        for (long value = num1; value <= num2; value++) {
+            total += GetWaviness(value);
+        }
+        return total;
     }
 
     private static long TotalWavinessInRange(long num1, long num2) {
@@ -79,6 +113,15 @@ public class Lc3753Solution {
     }
 
     public long TotalWaviness(long num1, long num2) {
+        if (num2 < num1) {
+            return 0;
+        }
+
+        long width = num2 - num1 + 1;
+        if (width <= DirectScanThreshold) {
+            return TotalWavinessDirect(num1, num2);
+        }
+
         return TotalWavinessInRange(num1, num2);
     }
 }
