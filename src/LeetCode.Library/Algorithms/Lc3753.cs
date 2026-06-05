@@ -51,9 +51,27 @@ public class Lc3753Solution {
         int length = highDigits.Length;
         lowDigits = lowDigits.PadLeft(length, '0');
 
-        long[,,,] waysMemo = new long[length + 1, 2, DigitStates, DigitStates];
-        long[,,,] sumMemo = new long[length + 1, 2, DigitStates, DigitStates];
-        bool[,,,] seen = new bool[length + 1, 2, DigitStates, DigitStates];
+        int stateSize = 2 * DigitStates * DigitStates;
+        int memoSize = (length + 1) * stateSize;
+        long[] waysMemo = new long[memoSize];
+        long[] sumMemo = new long[memoSize];
+        ulong[] seenBits = new ulong[(memoSize + 63) >> 6];
+
+        int GetIndex(int pos, int startedIndex, int last1Index, int last2Index) {
+            return ((pos * 2 + startedIndex) * DigitStates + last1Index) * DigitStates + last2Index;
+        }
+
+        bool IsSeen(int index) {
+            int word = index >> 6;
+            int bit = index & 63;
+            return (seenBits[word] & (1UL << bit)) != 0;
+        }
+
+        void MarkSeen(int index) {
+            int word = index >> 6;
+            int bit = index & 63;
+            seenBits[word] |= 1UL << bit;
+        }
 
         (long ways, long wavinessSum) Dfs(int pos, bool lowTight, bool highTight, bool started, int last1, int last2) {
             if (pos == length) {
@@ -63,9 +81,10 @@ public class Lc3753Solution {
             int startedIndex = started ? 1 : 0;
             int last1Index = last1 + 1;
             int last2Index = last2 + 1;
+            int memoIndex = GetIndex(pos, startedIndex, last1Index, last2Index);
 
-            if (!lowTight && !highTight && seen[pos, startedIndex, last1Index, last2Index]) {
-                return (waysMemo[pos, startedIndex, last1Index, last2Index], sumMemo[pos, startedIndex, last1Index, last2Index]);
+            if (!lowTight && !highTight && IsSeen(memoIndex)) {
+                return (waysMemo[memoIndex], sumMemo[memoIndex]);
             }
 
             int minDigit = lowTight ? lowDigits[pos] - '0' : 0;
@@ -101,9 +120,9 @@ public class Lc3753Solution {
             }
 
             if (!lowTight && !highTight) {
-                seen[pos, startedIndex, last1Index, last2Index] = true;
-                waysMemo[pos, startedIndex, last1Index, last2Index] = totalWays;
-                sumMemo[pos, startedIndex, last1Index, last2Index] = totalSum;
+                MarkSeen(memoIndex);
+                waysMemo[memoIndex] = totalWays;
+                sumMemo[memoIndex] = totalSum;
             }
 
             return (totalWays, totalSum);
