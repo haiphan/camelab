@@ -21,7 +21,7 @@ public class Lc2161Solution {
         }
 
         for (int i = p; i <= q; i++) {
-                res[i] = pivot;
+            res[i] = pivot;
         }
 
         return res;
