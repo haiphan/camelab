@@ -7,9 +7,11 @@ public class Lc1665Solution {
         int[] counts = new int[MaxDelta + 1];
         int minDelta = MaxDelta;
         int maxDelta = 0;
+        int sumActual = 0;
 
         // Counting sort by delta = minimum - actual in ascending order.
         foreach (int[] task in tasks) {
+            sumActual += task[0];
             int delta = task[1] - task[0];
             counts[delta]++;
             if (delta < minDelta) {
@@ -18,6 +20,11 @@ public class Lc1665Solution {
             if (delta > maxDelta) {
                 maxDelta = delta;
             }
+        }
+
+        // Prune: if all tasks have the same delta, ordering is irrelevant.
+        if (minDelta == maxDelta) {
+            return sumActual + minDelta;
         }
 
         for (int i = minDelta + 1; i <= maxDelta; i++) {
