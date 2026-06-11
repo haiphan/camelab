@@ -13,22 +13,38 @@ public class Lc3558Solution {
     }
     public int AssignEdgeWeights(int[][] edges) {
         int n = edges.Length + 1;
-        List<int>[] graph = new List<int>[n + 1];
-        for (int i = 0; i < edges.Length; i++) {
-            int u = edges[i][0], v = edges[i][1];
-            if (graph[u] == null) graph[u] = new List<int>();
-            if (graph[v] == null) graph[v] = new List<int>();
-            graph[u].Add(v);
-            graph[v].Add(u);
+        // CSR graph: head[i]..head[i+1]-1 are indices into adj[] for node i
+        int[] degree = new int[n + 1];
+        foreach (int[] e in edges) { degree[e[0]]++; degree[e[1]]++; }
+        int[] head = new int[n + 2];
+        for (int i = 1; i <= n; i++) head[i + 1] = head[i] + degree[i];
+        int[] adj = new int[2 * edges.Length];
+        int[] pos = new int[n + 1];
+        for (int i = 1; i <= n; i++) pos[i] = head[i];
+        foreach (int[] e in edges) {
+            adj[pos[e[0]]++] = e[1];
+            adj[pos[e[1]]++] = e[0];
         }
-        int dfs(int node, int parent) {
-            int d = 0;
-            foreach (int neighbor in graph[node]) {
-                if (neighbor == parent) continue;
-                d = Math.Max(d, dfs(neighbor, node) + 1);
+        // Level-by-level BFS: depth as a counter, no depth[] array needed
+        int maxDepth = 0;
+        bool[] visited = new bool[n + 1];
+        Queue<int> queue = new Queue<int>();
+        queue.Enqueue(1);
+        visited[1] = true;
+        while (queue.Count > 0) {
+            int levelSize = queue.Count;
+            for (int i = 0; i < levelSize; i++) {
+                int node = queue.Dequeue();
+                for (int j = head[node]; j < head[node + 1]; j++) {
+                    int neighbor = adj[j];
+                    if (!visited[neighbor]) {
+                        visited[neighbor] = true;
+                        queue.Enqueue(neighbor);
+                    }
+                }
             }
-            return d;
+            maxDepth++;
         }
-        return modPow(2, dfs(1, 0) - 1);
+        return modPow(2, maxDepth - 2);
     }
 }
