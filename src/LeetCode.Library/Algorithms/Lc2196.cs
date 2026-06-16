@@ -4,8 +4,14 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc2196Solution {
     public TreeNode CreateBinaryTree(int[][] descriptions) {
-        TreeNode[] nodes = new TreeNode[100001];
-        bool[] isChild = new bool[100001];
+        int maxVal = 0;
+        foreach (int[] desc in descriptions) {
+            if (desc[0] > maxVal) maxVal = desc[0];
+            if (desc[1] > maxVal) maxVal = desc[1];
+        }
+
+        TreeNode?[] nodes = new TreeNode?[maxVal + 1];
+        bool[] isChild = new bool[maxVal + 1];
 
         foreach (int[] desc in descriptions) {
             int parentVal = desc[0];
@@ -20,9 +26,9 @@ public class Lc2196Solution {
             }
 
             if (isLeft) {
-                nodes[parentVal].left = nodes[childVal];
+                nodes[parentVal]!.left = nodes[childVal];
             } else {
-                nodes[parentVal].right = nodes[childVal];
+                nodes[parentVal]!.right = nodes[childVal];
             }
 
             isChild[childVal] = true;
@@ -37,6 +43,6 @@ public class Lc2196Solution {
             }
         }
 
-        return nodes[rootVal];
+        return nodes[rootVal]!;
     }
 }
