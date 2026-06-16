@@ -2,24 +2,41 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc3612Solution {
     public string ProcessStr(string s) {
-        List<char> result = new();
+        char[] result = new char[Math.Max(4, EstimateMaxLength(s))];
+        int length = 0;
+
         foreach (char c in s) {
-            if (c == '*')
-            {
-                if (result.Count > 0) {
-                    result.RemoveAt(result.Count - 1);
-                }
-            } else if (c == '#') {
-                // duplicate result
-                result.AddRange(result);
-            } else if (c == '%')
-            {
-                // reverse result
-                result.Reverse();
-            } else {
-                result.Add(c);
+            switch (c) {
+                case '*':
+                    if (length > 0) length--;
+                    break;
+                case '#':
+                    if (length > 0) {
+                        Array.Copy(result, 0, result, length, length);
+                        length *= 2;
+                    }
+                    break;
+                case '%':
+                    Array.Reverse(result, 0, length);
+                    break;
+                default:
+                    result[length++] = c;
+                    break;
             }
         }
-        return new string(result.ToArray());
+
+        return new string(result, 0, length);
+    }
+
+    private static int EstimateMaxLength(string s) {
+        if (s.Length == 0) {
+            return 0;
+        }
+
+        if (s.Length == 1) {
+            return 1;
+        }
+
+        return 1 << (s.Length - 1);
     }
 }
