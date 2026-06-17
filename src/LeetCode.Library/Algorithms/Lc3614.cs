@@ -2,35 +2,45 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc3614Solution {
     public char ProcessStr(string s, long k) {
-        // Forward pass: track lengths exactly, saturating only at long overflow.
-        // Clamping at 2*(k+1) was wrong: '%' backward needs the exact currLen to compute
-        // currLen-1-idx; premature clamping gives the wrong reflected index.
-        long[] lengths = new long[s.Length + 1];
-        for (int i = 0; i < s.Length; i++) {
-            long prev = lengths[i];
-            lengths[i + 1] = s[i] switch {
-                '*' => prev > 0 ? prev - 1 : 0,
-                '#' => prev > long.MaxValue / 2 ? long.MaxValue : prev * 2,
-                '%' => prev,
-                _   => prev < long.MaxValue ? prev + 1 : long.MaxValue,
+        // Forward pass: compute only the final length (O(1) space).
+        // Problem guarantees final length <= 1e15 < long.MaxValue, so no overflow.
+        long len = 0;
+        foreach (char c in s) {
+            len = c switch {
+                '*' => len > 0 ? len - 1 : 0,
+                '#' => len * 2,
+                '%' => len,
+                _   => len + 1,
             };
         }
 
-        if (lengths[s.Length] <= k) return '.';
+        if (len <= k) return '.';
 
-        // Backward pass: undo each operation to find what character sits at index k
+        // Backward pass: invert each operation to recover prevLen from currLen,
+        // then update idx. No lengths[] array needed.
         long idx = k;
+        long currLen = len;
         for (int i = s.Length - 1; i >= 0; i--) {
-            long prevLen = lengths[i];
-            long currLen = lengths[i + 1];
-            switch (s[i]) {
-                case '*': break;                          // idx unchanged; last char was removed
-                case '#': idx %= prevLen; break;          // idx maps into the first copy
-                case '%': idx = currLen - 1 - idx; break; // reverse maps idx
+            char c = s[i];
+            long prevLen;
+            switch (c) {
+                case '*':
+                    prevLen = currLen + 1;
+                    break;
+                case '#':
+                    prevLen = currLen >> 1;
+                    idx %= prevLen;
+                    break;
+                case '%':
+                    prevLen = currLen;
+                    idx = currLen - 1 - idx;
+                    break;
                 default:
-                    if (idx == prevLen) return s[i];      // idx points at the appended char
+                    prevLen = currLen - 1;
+                    if (idx == prevLen) return c;
                     break;
             }
+            currLen = prevLen;
         }
 
         return '.';
