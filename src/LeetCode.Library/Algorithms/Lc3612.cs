@@ -5,7 +5,8 @@ public class Lc3612Solution {
         char[] result = new char[Math.Max(4, EstimateMaxLength(s))];
         int length = 0;
 
-        foreach (char c in s) {
+        for (int i = 0; i < s.Length; i++) {
+            char c = s[i];
             switch (c) {
                 case '*':
                     if (length > 0) length--;
@@ -17,7 +18,14 @@ public class Lc3612Solution {
                     }
                     break;
                 case '%':
-                    Array.Reverse(result, 0, length);
+                    int parity = 1;
+                    while (i + 1 < s.Length && s[i + 1] == '%') {
+                        parity ^= 1;
+                        i++;
+                    }
+                    if (parity == 1) {
+                        Array.Reverse(result, 0, length);
+                    }
                     break;
                 default:
                     result[length++] = c;
