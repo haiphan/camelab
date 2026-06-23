@@ -10,10 +10,11 @@ public class Lc3699Solution {
         }
         for (int i = 2; i <= n; i++)
         {
-            Array.Reverse(dp);
             int s = 0;
-            for (int j = 0; j < sz; j++)
+            int rev = i & 1;
+            for (int k = 0; k < sz; k++)
             {
+                int j = k + rev * (sz - 1 - (k << 1));
                 int temp = dp[j];
                 dp[j] = s;
                 s = (s + temp) % MOD;
