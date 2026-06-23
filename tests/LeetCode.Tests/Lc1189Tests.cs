@@ -6,7 +6,8 @@ namespace LeetCode.Tests;
 public class Lc1189Tests {
     public static TheoryData<string, int> Lc1189Data => new()
     {
-        { "", 0 },
+        // text, expected
+        { "nlaebolko", 1 },
     };
     
     [Theory]
@@ -16,9 +17,9 @@ public class Lc1189Tests {
         var solution = new Lc1189Solution();
 
         // Act
-        // var result = solution.MaxNumberOfBalloons(text);
+        var result = solution.MaxNumberOfBalloons(text);
 
         // Assert
-        // Assert.Equal(expected, result);
+        Assert.Equal(expected, result);
     }
 }
