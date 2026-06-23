@@ -15,21 +15,16 @@ public class Lc1840Solution {
         {
             return (y1 + y2 + Math.Abs(x2 - x1)) >> 1;
         }
-        for (int i = 0; i < rl; ++i)
+        restrictions[0][1] = yCap(1, 0, restrictions[0][0], restrictions[0][1]);
+        for (int i = 1; i < rl; ++i)
         {
-            int prevX = i == 0 ? 1 : restrictions[i - 1][0];
-            int prevY = i == 0 ? 0 : restrictions[i - 1][1];
-            restrictions[i][1] = yCap(prevX, prevY, restrictions[i][0], restrictions[i][1]);
+            restrictions[i][1] = yCap(restrictions[i - 1][0], restrictions[i - 1][1], restrictions[i][0], restrictions[i][1]);
         }
+        int ans = yPeak(1, 0, restrictions[0][0], restrictions[0][1]);
         for (int i = rl - 2; i >= 0; --i)
         {
             restrictions[i][1] = yCap(restrictions[i + 1][0], restrictions[i + 1][1], restrictions[i][0], restrictions[i][1]);
-        }
-        int ans = 0;
-        for (int i = 0; i < rl; ++i)        {
-            int prevX = i == 0 ? 1 : restrictions[i - 1][0];
-            int prevY = i == 0 ? 0 : restrictions[i - 1][1];
-            ans = Math.Max(ans, yPeak(prevX, prevY, restrictions[i][0], restrictions[i][1]));
+            ans = Math.Max(ans, yPeak(restrictions[i][0], restrictions[i][1], restrictions[i + 1][0], restrictions[i + 1][1]));
         }
         ans = Math.Max(ans, restrictions[rl - 1][1] + n - restrictions[rl - 1][0]);
         return ans;
