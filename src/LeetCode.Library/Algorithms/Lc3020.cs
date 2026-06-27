@@ -3,11 +3,15 @@ namespace LeetCode.Library.Algorithms;
 public class Lc3020Solution {
     public int MaximumLength(int[] nums) {
         int n = nums.Length;
-        var cm = new Dictionary<int, int>(n);
+        var cm = new IntIntMap(n);
+        var keys = new List<int>(n);
         int maxVal = 0;
         for (int i = 0; i < n; i++) {
-            cm[nums[i]] = cm.GetValueOrDefault(nums[i], 0) + 1;
-            if (nums[i] > maxVal) maxVal = nums[i];
+            int num = nums[i];
+            if (cm.Increment(num) == 1) {
+                keys.Add(num);
+            }
+            if (num > maxVal) maxVal = num;
         }
 
         int ans = 1;
@@ -17,7 +21,6 @@ public class Lc3020Solution {
             ans = Math.Max(ans, c1);
         }
 
-        var keys = new List<int>(cm.Keys);
         int sqrtMax = (int)Math.Sqrt(maxVal);
 
         foreach (int k in keys) {
@@ -67,5 +70,61 @@ public class Lc3020Solution {
         // Ensure we return an odd length: if even, subtract 1.
         if ((ans & 1) == 0) ans--;
         return ans;
+    }
+
+    private sealed class IntIntMap {
+        private readonly int[] keys;
+        private readonly int[] values;
+        private readonly byte[] states;
+        private readonly int mask;
+
+        public IntIntMap(int capacity) {
+            int size = 1;
+            while (size < capacity * 2) size <<= 1;
+            keys = new int[size];
+            values = new int[size];
+            states = new byte[size];
+            mask = size - 1;
+        }
+
+        private int Probe(int key) {
+            int idx = (int)((key * (uint)0x9E3779B1) & (uint)mask);
+            while (states[idx] != 0 && keys[idx] != key) {
+                idx = (idx + 1) & mask;
+            }
+            return idx;
+        }
+
+        public void Set(int key, int value) {
+            int idx = Probe(key);
+            keys[idx] = key;
+            values[idx] = value;
+            states[idx] = 1;
+        }
+
+        public int Increment(int key) {
+            int idx = Probe(key);
+            if (states[idx] == 0) {
+                keys[idx] = key;
+                values[idx] = 1;
+                states[idx] = 1;
+                return 1;
+            }
+            values[idx]++;
+            return values[idx];
+        }
+
+        public bool TryGetValue(int key, out int value) {
+            int idx = (int)((key * (uint)0x9E3779B1) & (uint)mask);
+            while (states[idx] != 0) {
+                if (keys[idx] == key) {
+                    value = values[idx];
+                    return true;
+                }
+                idx = (idx + 1) & mask;
+            }
+            value = 0;
+            return false;
+        }
     }
 }
