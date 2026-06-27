@@ -24,19 +24,15 @@ public class Lc3020Solution {
             if (k == 1) continue;
 
             // Compute theoretical max chain length starting from k using maxVal.
-            int tmp = k;
-            int levels = 0;
-            while (tmp <= maxVal) {
-                levels++;
-                if (tmp > sqrtMax) break;
-                tmp = tmp * tmp;
-            }
+            // Math.Log(maxVal)/Math.Log(k) > 1 is equivalent to k < maxVal.
+            if (k == maxVal) continue;
+            int levels = (int)Math.Floor(Math.Log(Math.Log(maxVal) / Math.Log(k), 2)) + 1;
             // Maximum achievable length from this start is at most 2*levels - 1.
             if (2 * levels - 1 <= ans) continue;
 
             // skip starts that are the square of a previous node with at least two copies
             int r = (int)Math.Sqrt(k);
-            if ((long)r * r == k && cm.ContainsKey(r) && cm[r] > 1) continue;
+            if (r * r == k && cm.TryGetValue(r, out int rCount) && rCount > 1) continue;
 
             int cur = k;
             int pairs = 0;
