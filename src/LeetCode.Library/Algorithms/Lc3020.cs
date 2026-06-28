@@ -22,9 +22,10 @@ public class Lc3020Solution {
         }
 
         int sqrtMax = (int)Math.Sqrt(maxVal);
+        var seen = new HashSet<int>(keys.Count);
 
         foreach (int k in keys) {
-            if (k == 1) continue;
+            if (k == 1 || seen.Contains(k)) continue;
 
             // Compute theoretical max chain length starting from k using maxVal.
             // Math.Log(maxVal)/Math.Log(k) > 1 is equivalent to k < maxVal.
@@ -43,6 +44,7 @@ public class Lc3020Solution {
             // follow chain cur, cur^2, cur^(4), ... while nodes have at least two copies
             while (true) {
                 if (!cm.TryGetValue(cur, out int cnt)) break;
+                seen.Add(cur);
                 if (cnt > 1) {
                     // If cur is already larger than sqrt(maxVal), cur^2 can't exist in nums.
                     if (cur > sqrtMax) {
