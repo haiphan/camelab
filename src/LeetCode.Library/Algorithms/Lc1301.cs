@@ -48,7 +48,7 @@ public class Lc1301Solution {
                     continue;
                 }
 
-                long ways = 0;
+                int ways = 0;
 
                 if (up == best) {
                     ways += nextWays[j];
@@ -63,7 +63,7 @@ public class Lc1301Solution {
                 int value = (cell == 'E') ? 0 : cell - '0';
 
                 currScore[j] = best + value;
-                currWays[j] = (int)(ways % MOD);
+                currWays[j] = ways % MOD;
                 rowReachable = true;
             }
 
