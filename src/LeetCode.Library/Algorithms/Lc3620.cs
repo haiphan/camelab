@@ -7,19 +7,40 @@ public class Lc3620Solution {
             return -1;
         }
 
-        List<(int to, int w)>[] graph = new List<(int to, int w)>[n];
+        int m = edges.Length;
+        int[] edgeFrom = new int[m];
+        int[] edgeTo = new int[m];
+        int[] edgeW = new int[m];
+        int[] outDegree = new int[n];
         int[] indegree = new int[n];
 
-        for (int i = 0; i < n; i++) {
-            graph[i] = new List<(int to, int w)>();
-        }
-
-        foreach (int[] e in edges) {
-            int u = e[0], v = e[1], w = e[2];
-            graph[u].Add((v, w));
+        for (int i = 0; i < m; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int w = edges[i][2];
+            edgeFrom[i] = u;
+            edgeTo[i] = v;
+            edgeW[i] = w;
+            outDegree[u]++;
             if (online[u] && online[v]) {
                 indegree[v]++;
             }
+        }
+
+        int[] head = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            head[i + 1] = head[i] + outDegree[i];
+        }
+
+        int[] to = new int[m];
+        int[] weight = new int[m];
+        int[] cursor = new int[n];
+        Array.Copy(head, cursor, n);
+        for (int i = 0; i < m; i++) {
+            int u = edgeFrom[i];
+            int idx = cursor[u]++;
+            to[idx] = edgeTo[i];
+            weight[idx] = edgeW[i];
         }
 
         Queue<int> queue = new Queue<int>();
@@ -33,7 +54,8 @@ public class Lc3620Solution {
         while (queue.Count > 0) {
             int u = queue.Dequeue();
             topo.Add(u);
-            foreach ((int v, int _) in graph[u]) {
+            for (int e = head[u]; e < head[u + 1]; e++) {
+                int v = to[e];
                 if (!online[v]) {
                     continue;
                 }
@@ -50,7 +72,8 @@ public class Lc3620Solution {
             if (!fromStart[u]) {
                 continue;
             }
-            foreach ((int v, int _) in graph[u]) {
+            for (int e = head[u]; e < head[u + 1]; e++) {
+                int v = to[e];
                 if (online[v]) {
                     fromStart[v] = true;
                 }
@@ -65,7 +88,8 @@ public class Lc3620Solution {
         toEnd[n - 1] = true;
         for (int i = topo.Count - 1; i >= 0; i--) {
             int u = topo[i];
-            foreach ((int v, int _) in graph[u]) {
+            for (int e = head[u]; e < head[u + 1]; e++) {
+                int v = to[e];
                 if (online[v] && toEnd[v]) {
                     toEnd[u] = true;
                     break;
@@ -78,7 +102,7 @@ public class Lc3620Solution {
         }
 
         bool[] active = new bool[n];
-        List<int> activeTopo = new List<int>();
+        List<int> activeTopo = new List<int>(topo.Count);
         for (int i = 0; i < topo.Count; i++) {
             int u = topo[i];
             if (fromStart[u] && toEnd[u]) {
@@ -87,32 +111,44 @@ public class Lc3620Solution {
             }
         }
 
-        List<(int to, int w)>[] prunedGraph = new List<(int to, int w)>[n];
-        for (int i = 0; i < n; i++) {
-            prunedGraph[i] = new List<(int to, int w)>();
-        }
-
-        List<int> candidates = new List<int>();
-        foreach (int[] e in edges) {
-            int u = e[0], v = e[1], w = e[2];
+        int[] activeOutDegree = new int[n];
+        int activeEdgeCount = 0;
+        int maxActiveWeight = 0;
+        for (int i = 0; i < m; i++) {
+            int u = edgeFrom[i];
+            int v = edgeTo[i];
             if (active[u] && active[v]) {
-                prunedGraph[u].Add((v, w));
-                candidates.Add(w);
+                activeOutDegree[u]++;
+                activeEdgeCount++;
+                if (edgeW[i] > maxActiveWeight) {
+                    maxActiveWeight = edgeW[i];
+                }
             }
         }
 
-        if (candidates.Count == 0) {
+        if (activeEdgeCount == 0) {
             return -1;
         }
 
-        candidates.Sort();
-        int uniqueCount = 1;
-        for (int i = 1; i < candidates.Count; i++) {
-            if (candidates[i] != candidates[uniqueCount - 1]) {
-                candidates[uniqueCount++] = candidates[i];
-            }
+        int[] activeHead = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            activeHead[i + 1] = activeHead[i] + activeOutDegree[i];
         }
-        candidates.RemoveRange(uniqueCount, candidates.Count - uniqueCount);
+
+        int[] activeTo = new int[activeEdgeCount];
+        int[] activeWeight = new int[activeEdgeCount];
+        int[] activeCursor = new int[n];
+        Array.Copy(activeHead, activeCursor, n);
+        for (int i = 0; i < m; i++) {
+            int u = edgeFrom[i];
+            int v = edgeTo[i];
+            if (!active[u] || !active[v]) {
+                continue;
+            }
+            int idx = activeCursor[u]++;
+            activeTo[idx] = v;
+            activeWeight[idx] = edgeW[i];
+        }
 
         long[] dist = new long[n];
         int[] seen = new int[n];
@@ -127,7 +163,9 @@ public class Lc3620Solution {
                 if (seen[u] != stamp || dist[u] > k) {
                     continue;
                 }
-                foreach ((int v, int w) in prunedGraph[u]) {
+                for (int e = activeHead[u]; e < activeHead[u + 1]; e++) {
+                    int v = activeTo[e];
+                    int w = activeWeight[e];
                     if (w < minEdge) {
                         continue;
                     }
@@ -138,17 +176,17 @@ public class Lc3620Solution {
                     }
                 }
             }
+
             return seen[n - 1] == stamp && dist[n - 1] <= k;
         }
 
-        int left = 0, right = candidates.Count - 1;
+        int left = 0;
+        int right = maxActiveWeight;
         int answer = -1;
-
         while (left <= right) {
             int mid = left + ((right - left) >> 1);
-            int target = candidates[mid];
-            if (CanAchieve(target)) {
-                answer = target;
+            if (CanAchieve(mid)) {
+                answer = mid;
                 left = mid + 1;
             } else {
                 right = mid - 1;
