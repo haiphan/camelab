@@ -7,27 +7,21 @@ public class Lc3756Solution {
         int length = s.Length;
         int[] nonZeroPrefix = new int[length + 1];
         int[] sumPrefix = new int[length + 1];
-        int[] filteredDigits = new int[length];
-        int filteredLength = 0;
+        long[] prefixValue = new long[length + 1];
+        long[] pow10 = new long[length + 1];
+        pow10[0] = 1;
 
         for (int i = 0; i < length; i++) {
             int digit = s[i] - '0';
             sumPrefix[i + 1] = sumPrefix[i] + digit;
             nonZeroPrefix[i + 1] = nonZeroPrefix[i];
+            pow10[i + 1] = (pow10[i] * 10) % mod;
 
             if (digit != 0) {
                 nonZeroPrefix[i + 1]++;
-                filteredDigits[filteredLength++] = digit;
+                int filteredIndex = nonZeroPrefix[i + 1];
+                prefixValue[filteredIndex] = (prefixValue[filteredIndex - 1] * 10 + digit) % mod;
             }
-        }
-
-        long[] prefixValue = new long[filteredLength + 1];
-        long[] pow10 = new long[filteredLength + 1];
-        pow10[0] = 1;
-
-        for (int i = 0; i < filteredLength; i++) {
-            prefixValue[i + 1] = (prefixValue[i] * 10 + filteredDigits[i]) % mod;
-            pow10[i + 1] = (pow10[i] * 10) % mod;
         }
 
         int[] result = new int[queries.Length];
@@ -45,13 +39,10 @@ public class Lc3756Solution {
                 continue;
             }
 
-            long value = prefixValue[endExclusive] - (prefixValue[start] * pow10[count] % mod);
-            if (value < 0) {
-                value += mod;
-            }
+            long value = (prefixValue[endExclusive] - (prefixValue[start] * pow10[count] % mod) + mod) % mod;
 
             long sum = sumPrefix[right + 1] - sumPrefix[left];
-            result[i] = (int)((value * (sum % mod)) % mod);
+            result[i] = (int)(value * sum % mod);
         }
 
         return result;
