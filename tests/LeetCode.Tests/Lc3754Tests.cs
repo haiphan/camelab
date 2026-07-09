@@ -6,7 +6,8 @@ namespace LeetCode.Tests;
 public class Lc3754Tests {
     public static TheoryData<int, long> Lc3754Data => new()
     {
-        { 0, 0L },
+        // n, expected
+        { 10203004, 12340 },
     };
     
     [Theory]
@@ -16,9 +17,9 @@ public class Lc3754Tests {
         var solution = new Lc3754Solution();
 
         // Act
-        // var result = solution.SumAndMultiply(n);
+        var result = solution.SumAndMultiply(n);
 
         // Assert
-        // Assert.Equal(expected, result);
+        Assert.Equal(expected, result);
     }
 }
