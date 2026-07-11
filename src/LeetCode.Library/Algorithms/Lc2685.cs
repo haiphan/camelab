@@ -2,57 +2,55 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc2685Solution {
     public int CountCompleteComponents(int n, int[][] edges) {
-        int[] parent = new int[n];
-        int[] size = new int[n];
-        int[] edgeCount = new int[n];
+        int m = edges.Length;
+        int[] head = new int[n];
+        int[] to = new int[m * 2];
+        int[] next = new int[m * 2];
         bool[] seen = new bool[n];
+        Array.Fill(head, -1);
 
-        int Find(int x) {
-            if (parent[x] != x) {
-                parent[x] = Find(parent[x]);
-            }
-            return parent[x];
+        void AddUndirectedEdge(int u, int v, ref int edgeIndex) {
+            to[edgeIndex] = v;
+            next[edgeIndex] = head[u];
+            head[u] = edgeIndex;
+            edgeIndex++;
         }
 
-        void AddEdge(int x, int y) {
-            int rootX = Find(x);
-            int rootY = Find(y);
-
-            if (rootX == rootY) {
-                edgeCount[rootX]++;
-                return;
-            }
-
-            if (size[rootX] < size[rootY]) {
-                (rootX, rootY) = (rootY, rootX);
-            }
-
-            parent[rootY] = rootX;
-            size[rootX] += size[rootY];
-            edgeCount[rootX] += edgeCount[rootY] + 1;
-        }
-
-        for (int i = 0; i < n; i++) {
-            parent[i] = i;
-            size[i] = 1;
-        }
-
+        int edgePtr = 0;
         foreach (var edge in edges) {
             int u = edge[0];
             int v = edge[1];
-            AddEdge(u, v);
+            AddUndirectedEdge(u, v, ref edgePtr);
+            AddUndirectedEdge(v, u, ref edgePtr);
         }
 
         int completeComponents = 0;
+
+        void Dfs(int start, ref int vertexCount, ref int directedEdgeCount) {
+            seen[start] = true;
+            vertexCount++;
+
+            for (int e = head[start]; e != -1; e = next[e]) {
+                directedEdgeCount++;
+                int neighbor = to[e];
+                if (!seen[neighbor]) {
+                    Dfs(neighbor, ref vertexCount, ref directedEdgeCount);
+                }
+            }
+        }
+
         for (int i = 0; i < n; i++) {
-            int root = Find(i);
-            if (seen[root]) {
+            if (seen[i]) {
                 continue;
             }
-            seen[root] = true;
 
-            long expectedEdges = (long)size[root] * (size[root] - 1) / 2;
-            if (edgeCount[root] == expectedEdges) {
+            int vertexCount = 0;
+            int directedEdgeCount = 0;
+            Dfs(i, ref vertexCount, ref directedEdgeCount);
+
+            int undirectedEdgeCount = directedEdgeCount / 2;
+            int expectedEdges = vertexCount * (vertexCount - 1) / 2;
+            if (undirectedEdgeCount == expectedEdges) {
                 completeComponents++;
             }
         }
