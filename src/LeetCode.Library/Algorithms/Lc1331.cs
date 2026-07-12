@@ -17,13 +17,14 @@ public class Lc1331Solution {
         int[] result = new int[n];
         int rank = 1;
         result[sortedIdx[0]] = rank;
-
+        int prevIdx = sortedIdx[0];
         for (int i = 1; i < n; i++) {
-            if (arr[sortedIdx[i]] != arr[sortedIdx[i - 1]]) {
+            int curIdx = sortedIdx[i];
+            if (arr[curIdx] != arr[prevIdx]) {
                 rank++;
             }
-
-            result[sortedIdx[i]] = rank;
+            result[curIdx] = rank;
+            prevIdx = curIdx;
         }
 
         return result;
