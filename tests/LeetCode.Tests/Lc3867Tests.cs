@@ -17,9 +17,9 @@ public class Lc3867Tests {
         var solution = new Lc3867Solution();
 
         // Act
-        // var result = solution.GcdSum(nums);
+        var result = solution.GcdSum(nums);
 
         // Assert
-        // Assert.Equal(expected, result);
+        Assert.Equal(expected, result);
     }
 }
