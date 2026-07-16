@@ -2,8 +2,12 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc3867Solution {
     private int GCD(int a, int b) {
-        if (b == 0) return a;
-        return GCD(b, a % b);
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
     }
     public long GcdSum(int[] nums) {
         int maxv = 0;
