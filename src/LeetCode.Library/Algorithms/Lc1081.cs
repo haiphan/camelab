@@ -9,15 +9,22 @@ public class Lc1081Solution {
         }
         Stack<char> stack = new Stack<char>();
         foreach (char c in s) {
-            count[c - 'a']--;
-            if (inStack[c - 'a']) {
+            int currentIndex = c - 'a';
+            count[currentIndex]--;
+            if (inStack[currentIndex]) {
                 continue;
             }
-            while (stack.Count > 0 && stack.Peek() > c && count[stack.Peek() - 'a'] > 0) {
-                inStack[stack.Pop() - 'a'] = false;
+            while (stack.Count > 0) {
+                char top = stack.Peek();
+                int topIndex = top - 'a';
+                if (top <= c || count[topIndex] == 0) {
+                    break;
+                }
+                stack.Pop();
+                inStack[topIndex] = false;
             }
             stack.Push(c);
-            inStack[c - 'a'] = true;
+            inStack[currentIndex] = true;
         }
         char[] result = new char[stack.Count];
         for (int i = result.Length - 1; i >= 0; i--) {
