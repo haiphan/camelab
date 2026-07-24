@@ -3,6 +3,14 @@ namespace LeetCode.Library.Algorithms;
 public class Lc3499Solution {
     public int MaxActiveSectionsAfterTrade(string s) {
         int n = s.Length;
+        if (n < 3) {
+            int shortOnes = 0;
+            foreach (char c in s) {
+                shortOnes += c - '0';
+            }
+            return shortOnes;
+        }
+
         int ones = 0;
         int bestGain = 0;
         int i = 0;
@@ -12,10 +20,18 @@ public class Lc3499Solution {
             i++;
         }
 
+        if (i == n) {
+            return ones;
+        }
+
         int leftZeroCount = 0;
         while (i < n && s[i] == '0') {
             leftZeroCount++;
             i++;
+        }
+
+        if (i == n) {
+            return ones;
         }
 
         while (i < n) {
