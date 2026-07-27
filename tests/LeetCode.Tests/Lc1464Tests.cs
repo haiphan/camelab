@@ -17,9 +17,9 @@ public class Lc1464Tests {
         var solution = new Lc1464Solution();
 
         // Act
-        // var result = solution.MaxProduct(nums);
+        var result = solution.MaxProduct(nums);
 
         // Assert
-        // Assert.Equal(expected, result);
+        Assert.Equal(expected, result);
     }
 }
