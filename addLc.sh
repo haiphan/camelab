@@ -14,6 +14,7 @@ ARG2=$2
 ARG3=$3
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PARSER_SCRIPT="$SCRIPT_DIR/scripts/extract_lc_csharp_signature.py"
+PAYLOAD_VALIDATOR_SCRIPT="$SCRIPT_DIR/scripts/validate_lc_graphql_payload.py"
 
 extract_slug_from_url() {
     local problem_url="$1"
@@ -46,6 +47,7 @@ fetch_signature_from_leetcode() {
     local slug
     local payload
     local response
+    local signature
 
     if [ -z "$problem_url" ]; then
         return 0
@@ -53,36 +55,51 @@ fetch_signature_from_leetcode() {
 
     slug=$(extract_slug_from_url "$problem_url")
     if [ -z "$slug" ] || [ "$slug" = "$problem_url" ]; then
-        echo "Warning: Could not parse LeetCode slug from URL: $problem_url" >&2
-        return 0
+        echo "Error: Could not parse LeetCode slug from URL: $problem_url" >&2
+        return 1
     fi
 
     if ! command -v curl >/dev/null 2>&1; then
-        echo "Warning: curl is required to fetch LeetCode signature." >&2
-        return 0
+        echo "Error: curl is required to fetch LeetCode signature." >&2
+        return 1
     fi
 
     if ! command -v python3 >/dev/null 2>&1; then
-        echo "Warning: python3 is required to parse LeetCode response." >&2
-        return 0
+        echo "Error: python3 is required to parse LeetCode response." >&2
+        return 1
     fi
 
     if [ ! -f "$PARSER_SCRIPT" ]; then
-        echo "Warning: parser script not found: $PARSER_SCRIPT" >&2
-        return 0
+        echo "Error: parser script not found: $PARSER_SCRIPT" >&2
+        return 1
+    fi
+
+    if [ ! -f "$PAYLOAD_VALIDATOR_SCRIPT" ]; then
+        echo "Error: payload validator script not found: $PAYLOAD_VALIDATOR_SCRIPT" >&2
+        return 1
     fi
 
     payload=$(printf '{"query":"query questionData($titleSlug: String!) { question(titleSlug: $titleSlug) { codeSnippets { langSlug code } } }","variables":{"titleSlug":"%s"}}' "$slug")
-    echo "Fetch with payload: $payload" >&2
     response=$(curl -sS "https://leetcode.com/graphql" \
         -H "Content-Type: application/json" \
         -H "Referer: https://leetcode.com/problems/$slug/" \
         --data "$payload") || {
-        echo "Warning: Failed to fetch LeetCode metadata for slug '$slug'." >&2
-        return 0
+        echo "Error: Failed to fetch LeetCode metadata for slug '$slug'." >&2
+        return 1
     }
 
-    printf "%s" "$response" | python3 "$PARSER_SCRIPT" signature
+    if ! printf "%s" "$response" | python3 "$PAYLOAD_VALIDATOR_SCRIPT"; then
+        echo "Error: LeetCode response payload is not in the expected shape for slug '$slug'." >&2
+        return 1
+    fi
+
+    signature=$(printf "%s" "$response" | python3 "$PARSER_SCRIPT" signature)
+    if [ -z "$signature" ]; then
+        echo "Error: Could not extract C# signature from LeetCode payload for slug '$slug'." >&2
+        return 1
+    fi
+
+    printf "%s" "$signature"
 }
 
 extract_test_metadata_from_signature() {
@@ -116,7 +133,14 @@ mkdir -p "$TEST_DIR"
 # File names
 ALGO_FILE="$SRC_DIR/Lc$ID.cs"
 TEST_FILE="$TEST_DIR/Lc${ID}Tests.cs"
-LC_SIGNATURE=$(fetch_signature_from_leetcode "$LEETCODE_URL")
+LC_SIGNATURE=""
+
+if [ -n "$LEETCODE_URL" ]; then
+    if ! LC_SIGNATURE=$(fetch_signature_from_leetcode "$LEETCODE_URL"); then
+        echo "Error: Aborting file generation due to invalid LeetCode payload." >&2
+        exit 1
+    fi
+fi
 RETURN_TYPE="int"
 METHOD_ARGS=""
 TEST_PARAMS="int expected"
