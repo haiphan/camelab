@@ -7,6 +7,10 @@ public class Lc3345Tests {
     public static TheoryData<int, int, int> Lc3345Data => new()
     {
         { 15, 3, 16 },
+        { 19, 7, 20 },
+        { 10, 7, 10 },
+        { 1, 1, 1 },
+        { 1, 10, 10 },
     };
     
     [Theory]

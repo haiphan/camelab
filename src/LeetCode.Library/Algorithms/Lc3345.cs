@@ -1,7 +1,11 @@
 namespace LeetCode.Library.Algorithms;
 
 public class Lc3345Solution {
-    private int  GetDiGitProduct(int n) {
+    private int GetDigitProduct(int n) {
+        if (n == 0) {
+            return 0;
+        }
+
         int product = 1;
         while (n > 0) {
             product *= n % 10;
@@ -12,12 +16,16 @@ public class Lc3345Solution {
         }
         return product;
     }
+
     public int SmallestNumber(int n, int t) {
-        for (int i = n; i <= 200; i++) {
-            if (GetDiGitProduct(i) % t == 0) {
+        int upperBound = n + ((10 - (n % 10)) % 10);
+        for (int i = n; i <= upperBound; i++) {
+            if (GetDigitProduct(i) % t == 0) {
                 return i;
             }
         }
-        return -1;
+
+        // upperBound always ends with digit 0, so product is 0 and divisible by any t.
+        return upperBound;
     }
 }
