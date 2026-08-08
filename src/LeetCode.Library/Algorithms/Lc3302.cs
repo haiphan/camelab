@@ -8,16 +8,14 @@ public class Lc3302Solution {
             return [];
         }
 
-        int[] suffix = new int[n + 1];
+        int[] last = new int[m];
+        Array.Fill(last, -1);
         int j = m - 1;
-        int matched = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            if (j >= 0 && word1[i] == word2[j]) {
-                matched++;
+        for (int i = n - 1; i >= 0 && j >= 0; i--) {
+            if (word1[i] == word2[j]) {
+                last[j] = i;
                 j--;
             }
-
-            suffix[i] = matched;
         }
 
         int[] ans = new int[m];
@@ -31,7 +29,9 @@ public class Lc3302Solution {
                 continue;
             }
 
-            if (!usedChange && suffix[iPtr + 1] >= m - jPtr - 1) {
+            bool canUseChange = !usedChange &&
+                (jPtr == m - 1 || (last[jPtr + 1] != -1 && iPtr < last[jPtr + 1]));
+            if (canUseChange) {
                 ans[jPtr++] = iPtr++;
                 usedChange = true;
                 continue;
