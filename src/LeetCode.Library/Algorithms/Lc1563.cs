@@ -3,6 +3,13 @@ namespace LeetCode.Library.Algorithms;
 public class Lc1563Solution {
     public int StoneGameV(int[] stoneValue) {
         int n = stoneValue.Length;
+        if (n <= 1) {
+            return 0;
+        }
+        if (n == 2) {
+            return Math.Min(stoneValue[0], stoneValue[1]);
+        }
+
         int[] prefixSum = new int[n + 1];
         for (int i = 0; i < n; i++) {
             prefixSum[i + 1] = prefixSum[i] + stoneValue[i];
