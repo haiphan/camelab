@@ -14,7 +14,8 @@ public class Lc1563Solution {
         for (int i = 0; i < n; i++) {
             prefixSum[i + 1] = prefixSum[i] + stoneValue[i];
         }
-
+        // dp[left, right] = max score for the subarray stoneValue[left:right+1]
+        // rightBest[left, right] = max score for the subarray stoneValue[left:right+1] if we choose the right part
         int[,] dp = new int[n, n];
         int[,] rightBest = new int[n, n];
         for (int i = 0; i < n; i++) {

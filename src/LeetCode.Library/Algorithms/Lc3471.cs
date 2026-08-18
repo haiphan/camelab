@@ -2,43 +2,33 @@ namespace LeetCode.Library.Algorithms;
 
 public class Lc3471Solution {
     public int LargestInteger(int[] nums, int k) {
-        /*
-        An integer x is almost missing from nums if x appears in exactly one subarray of size k within nums.
-        Return the largest almost missing integer from nums. If no such integer exists, return -1.
-        */
         int n = nums.Length;
+        int maxv = 0;
         int[] count = new int[51];
         foreach (int num in nums) {
             count[num]++;
+            maxv = Math.Max(maxv, num);
         }
-        if (k == nums.Length) {
-            for (int i = 50; i >= 0; i--) {
-                if (count[i] > 0) {
-                    return i;
-                }
-            }
-            return -1;
+        if (k == n) {
+            return maxv;
         }
         if (k == 1) {
-            for (int i = 50; i >= 0; i--) {
+            for (int i = maxv; i >= 0; i--) {
                 if (count[i] == 1) {
                     return i;
                 }
             }
-            return -1;
         }
-        n--;
-        if (nums[0] == nums[n]) {
-            return -1;
+        int first = nums[0];
+        int last = nums[n - 1];
+        if (count[first] == 1 && count[last] == 1) {
+            return Math.Max(first, last);
         }
-        if (count[nums[0]] == 1 && count[nums[n]] == 1) {
-            return Math.Max(nums[0], nums[n]);
+        if (count[first] == 1) {
+            return first;
         }
-        if (count[nums[0]] == 1) {
-            return nums[0];
-        }
-        if (count[nums[n]] == 1) {
-            return nums[n];
+        if (count[last] == 1) {
+            return last;
         }
         return -1;
     }
