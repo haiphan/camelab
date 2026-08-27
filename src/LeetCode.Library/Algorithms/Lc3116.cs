@@ -84,7 +84,7 @@ public class Lc3116Solution {
         Array.Sort(plusLcm, 0, plusCount);
         Array.Sort(minusLcm, 0, minusCount);
 
-        long lo = 1;
+        long lo = sorted[n - 1];
         while (lo < hi) {
             long mid = lo + (hi - lo) / 2;
             if (CountLessEqual(mid, plusLcm, plusCount, minusLcm, minusCount) < k) {
