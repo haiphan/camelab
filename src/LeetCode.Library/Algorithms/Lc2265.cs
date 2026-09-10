@@ -15,7 +15,7 @@ public class Lc2265Solution {
             Dfs(node.right, out int rightSum, out int rightCount);
             sum = node.val + leftSum + rightSum;
             count = 1 + leftCount + rightCount;
-            if (sum / count == node.val) ans++;
+            if (count == 1 || (sum / count) == node.val) ans++;
         }
         Dfs(root, out _, out _);
         return ans;
