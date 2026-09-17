@@ -18,7 +18,7 @@ PAYLOAD_VALIDATOR_SCRIPT="$SCRIPT_DIR/scripts/validate_lc_graphql_payload.py"
 
 extract_slug_from_url() {
     local problem_url="$1"
-    printf "%s" "$problem_url" | sed -E 's#^https?://(www\.)?leetcode\.com/problems/([^/]+)/?.*$#\2#'
+    printf "%s" "$problem_url" | sed -E 's#^https?://(www\.)?leetcode\.com/problems/([A-Za-z0-9-]+).*$#\2#'
 }
 
 slug_to_pascal_case() {
@@ -34,7 +34,7 @@ slug_to_pascal_case() {
     }'
 }
 
-if [[ "$ARG2" =~ ^https?://(www\.)?leetcode\.com/problems/[^/]+/?$ ]]; then
+if [[ "$ARG2" =~ ^https?://(www\.)?leetcode\.com/problems/[A-Za-z0-9-]+([/?#].*)?$ ]]; then
     NAME=""
     LEETCODE_URL="$ARG2"
 else
