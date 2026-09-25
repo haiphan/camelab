@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 namespace LeetCode.Library.Algorithms;
 
 public class Lc1096Solution {
@@ -61,12 +60,9 @@ public class Lc1096Solution {
                 {
                     op.Add('*');
                 }
-                StringBuilder sb = new StringBuilder();
-                for (; i < n &&  char.IsLetter(expression[i]); i++)
-                {
-                    sb.Append(expression[i]);
-                }
-                st.Add([sb.ToString()]);
+                int start = i;
+                for (; i < n &&  char.IsLetter(expression[i]); i++) { }
+                st.Add([expression[start..i]]);
                 i--;
                 cur = expression[i];
                 break;

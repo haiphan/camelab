@@ -18,6 +18,7 @@ public class Lc1477Solution {
                 left[i] = i - j + 1;
                 if (j > 0 && left[j - 1] != 0)
                 {
+                    // update the best sum of lengths using the current subarray and the best subarray ending before it
                     best = Math.Min(best, left[j - 1] + left[i]);
                 }
 
