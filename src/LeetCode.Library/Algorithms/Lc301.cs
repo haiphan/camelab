@@ -10,7 +10,14 @@ public class Lc301Solution {
             if (c == '(') {
                 left++;
             } else if (c == ')') {
-                if (left > 0) left--; else right++;
+                if (left > 0)
+                {
+                    left--;
+                }
+                else
+                {
+                    right++;
+                }
             }
         }
 
@@ -18,10 +25,15 @@ public class Lc301Solution {
         Dfs(new StringBuilder(s), 0, left, right, 0, result);
         return result;
     }
-
+    // sb: the current string being processed. start: the index to start processing from.
+    // left: number of '(' to remove, right: number of ')' to remove, open: current balance of open parentheses.
+    // result: list to store valid strings.
     private static void Dfs(StringBuilder sb, int start, int left, int right, int open, List<string> result) {
         // Not enough characters left from `start` onward to perform the remaining removals.
-        if (sb.Length - start < left + right) return;
+        if (sb.Length - start < left + right)
+        {
+            return;
+        }
 
         var balance = open;
         for (int i = start; i < sb.Length; i++) {
