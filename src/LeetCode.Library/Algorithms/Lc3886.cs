@@ -14,12 +14,28 @@ public class Lc3886Solution {
         }
 
         sufMin[n - 1] = nums[n - 1];
-        for (int i = n - 2; i >= 0; i--) sufMin[i] = Math.Min(sufMin[i + 1], nums[i]);
+        for (int i = n - 2; i >= 0; i--)
+        {
+            sufMin[i] = Math.Min(sufMin[i + 1], nums[i]);
+        }
 
         int sum = 0;
-        for (int k = 1; k <= n; k++) {
-            if (n % k != 0) continue;
-            if (IsGood(nums, prefMax, sufMin, descPrefix, k)) sum += k;
+        for (int i = 1; i * i <= n; i++) {
+            if (n % i != 0)
+            {
+                continue;
+            }
+
+            int j = n / i;
+            if (IsGood(nums, prefMax, sufMin, descPrefix, i))
+            {
+                sum += i;
+            }
+
+            if (j != i && IsGood(nums, prefMax, sufMin, descPrefix, j))
+            {
+                sum += j;
+            }
         }
         return sum;
     }
@@ -30,7 +46,10 @@ public class Lc3886Solution {
         // Adjacent blocks' value ranges must not overlap, else no assignment of block
         // rotations can produce a globally non-decreasing array.
         for (int boundary = k; boundary < n; boundary += k) {
-            if (prefMax[boundary - 1] > sufMin[boundary]) return false;
+            if (prefMax[boundary - 1] > sufMin[boundary])
+            {
+                return false;
+            }
         }
 
         // A block can be rotated into sorted order only if it has at most one cyclic descent:
@@ -38,8 +57,15 @@ public class Lc3886Solution {
         for (int start = 0; start < n; start += k) {
             int end = start + k - 1;
             int descents = descPrefix[end] - descPrefix[start];
-            if (nums[end] > nums[start]) descents++;
-            if (descents > 1) return false;
+            if (nums[end] > nums[start])
+            {
+                descents++;
+            }
+
+            if (descents > 1)
+            {
+                return false;
+            }
         }
         return true;
     }
