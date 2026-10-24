@@ -3,15 +3,16 @@ namespace LeetCode.Library.Algorithms;
 public class Lc3863Solution {
     public int MinOperations(string s) {
         int n = s.Length;
-        bool flag = true;
+        // Check if the string is already non-decreasing
+        bool isGood = true;
 
         for(int i=0;i<n;i++) {
             if(i > 0 && s[i] < s[i - 1]) {
-                flag = false;
+                isGood = false;
                 break;
             }
         }
-        if(flag) {
+        if(isGood) {
             return 0;
         }
         if(n == 2) {
