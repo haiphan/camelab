@@ -7,7 +7,9 @@ public class Lc2747Tests {
     public static TheoryData<int, int[][], int, int[], int[]> Lc2747Data => new()
     {
         // n, logs, x, queries, expected
-        { 3, [[1,3],[2,6],[1,5]], 5, [10,11], [1, 2] }
+        { 3, [[1,3],[2,6],[1,5]], 5, [10,11], [1, 2] },
+        { 2, [], 1, [5], [2] },
+        { 3, [[1,1],[2,2]], 1, [2,100,200], [1, 3, 3] }
     };
     
     [Theory]

@@ -5,25 +5,19 @@ public class Lc2747Solution {
         int L = logs.Length;
         int Q = queries.Length;
 
-        // Flatten logs into parallel key/value arrays so Array.Sort can use the
-        // primitive paired-array overload instead of a comparator delegate.
-        int[] logTimes = new int[L];
-        int[] logServers = new int[L];
-        for (int i = 0; i < L; i++) {
-            logServers[i] = logs[i][0];
-            logTimes[i] = logs[i][1];
+        if (L == 0)
+        {
+            // No requests ever happened, so every server is idle for every query.
+            int[] allIdle = new int[Q];
+            Array.Fill(allIdle, n);
+            return allIdle;
         }
-        Array.Sort(logTimes, logServers);
+
+        Array.Sort(logs, (a, b) => a[1].CompareTo(b[1]));
 
         // Process queries in ascending order so both window pointers only move forward.
-        int[] sortedQueries = (int[])queries.Clone();
-        int[] order = new int[Q];
-        for (int i = 0; i < Q; i++)
-        {
-            order[i] = i;
-        }
-
-        Array.Sort(sortedQueries, order);
+        int[] order = Enumerable.Range(0, Q).ToArray();
+        Array.Sort(order, (a, b) => queries[a].CompareTo(queries[b]));
 
         int[] ans = new int[Q];
         int[] cnt = new int[n + 1];
@@ -31,11 +25,12 @@ public class Lc2747Solution {
         int start = 0, end = 0;
 
         for (int i = 0; i < Q; i++) {
-            int right = sortedQueries[i];
+            int idx = order[i];
+            int right = queries[idx];
             int left = right - x;
 
-            while (end < L && logTimes[end] <= right) {
-                int server = logServers[end];
+            while (end < L && logs[end][1] <= right) {
+                int server = logs[end][0];
                 if (cnt[server]++ == 0)
                 {
                     active++;
@@ -44,8 +39,8 @@ public class Lc2747Solution {
                 end++;
             }
 
-            while (start < L && logTimes[start] < left) {
-                int server = logServers[start];
+            while (start < L && logs[start][1] < left) {
+                int server = logs[start][0];
                 if (--cnt[server] == 0)
                 {
                     active--;
@@ -54,7 +49,18 @@ public class Lc2747Solution {
                 start++;
             }
 
-            ans[order[i]] = n - active;
+            ans[idx] = n - active;
+
+            // start == L means every log is behind the window for good; since queries
+            // are processed in ascending order, all remaining queries are also idle.
+            if (start == L) {
+                for (int j = i + 1; j < Q; j++)
+                {
+                    ans[order[j]] = n;
+                }
+
+                break;
+            }
         }
 
         return ans;
