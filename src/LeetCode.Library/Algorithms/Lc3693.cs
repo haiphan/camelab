@@ -5,6 +5,9 @@ public class Lc3693Solution {
         if (n == 0) {
             return 0;
         }
+        // a represents the minimum cost to reach the top from the current step with a 1-step jump
+        // b represents the minimum cost to reach the top from the current step with a 2-step jump
+        // c represents the minimum cost to reach the top from the current step with a 3-step jump
         int a = costs[n - 1];
         int b = int.MaxValue / 2;
         int c = int.MaxValue / 2;
