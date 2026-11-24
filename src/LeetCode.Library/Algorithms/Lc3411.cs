@@ -10,6 +10,7 @@ public class Lc3411Solution {
         return a;
     }
     public int MaxLength(int[] nums) {
+        // product of the current subarray is coprime with the next element
         int best = 2, left = 0, product = 1;
         for (int right = 0; right < nums.Length; right++) {
             int x = nums[right];
